@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
  * @author yangjq
  */
 @Getter
+@Setter //Feign调用时需要Setter方法设置返回参数
 public class Result<T> {
 
   /**
@@ -55,7 +57,15 @@ public class Result<T> {
    * @param data 获取的数据
    */
   public static <T> Result<T> success(T data) {
-    return new Result<>(HttpStatus.OK.value(), "success", data);
+    return success("success", data);
+  }
+
+  /**
+   * 请求成功，返回成功信息
+   * @param message 返回信息
+   */
+  public static Result<List> success(String message) {
+    return success(message, Collections.EMPTY_LIST);
   }
 
   /**
@@ -72,7 +82,7 @@ public class Result<T> {
    *
    * 请求失败，返回编号和信息
    */
-  static Result<List> fail(Integer code, String message) {
+  public static Result<List> fail(Integer code, String message) {
     return new Result<>(code, message, Collections.EMPTY_LIST);
   }
 

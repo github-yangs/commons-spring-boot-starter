@@ -14,6 +14,9 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.util.Assert;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * JsonWebToken工具类
@@ -83,6 +86,7 @@ public class TokenUtil {
       throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
     // 获取Token
     String token = request.getHeader(AUTH_HEADER);
+    Assert.notNull(token, "token不能为空");
     return parseToken(token);
   }
 
@@ -113,11 +117,47 @@ public class TokenUtil {
   }
 
   /**
+   * 从claims中获取参数
+   * @param key
+   * @return
+   */
+  public static Object getFromClaim(String key){
+    Claims claims = parseToken(getRequest());
+    return claims.get(key);
+  }
+
+  /**
    * 判断token是否已经失效
    */
-  public boolean isTokenExpired(String token) {
+  public static boolean isTokenExpired(String token) {
     Date expiredDate = parseToken(token).getExpiration();
     return expiredDate.before(new Date());
+  }
+
+  /**
+   * 获取当前的请求
+   * @return
+   */
+  private static HttpServletRequest getRequest(){
+    ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
+        .getRequestAttributes();
+    return requestAttributes.getRequest();
+  }
+
+  /**
+   * 获取当前登录用户的UserID
+   * @return UserID
+   */
+  public static String getLoginUserId(){
+    return (String) getFromClaim("userId");
+  }
+
+  /**
+   * 获取当前登录用户的UserName
+   * @return UserName
+   */
+  public static String getLoginUserName(){
+    return (String) getFromClaim("sub");
   }
 
 }

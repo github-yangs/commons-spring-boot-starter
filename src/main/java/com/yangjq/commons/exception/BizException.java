@@ -23,4 +23,14 @@ public class BizException extends RuntimeException{
     super(exceptionEnum.getMessage());
     this.code = exceptionEnum.getCode();
   }
+
+  /**
+   * 该constructor仅用于远程调用或调用第三方报错自定义返回码
+   * @param code 错误码
+   * @param message 错误信息
+   */
+  public BizException(Integer code, String message) {
+    super(message);
+    this.code = code;
+  }
 }

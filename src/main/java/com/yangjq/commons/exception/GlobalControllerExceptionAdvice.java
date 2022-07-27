@@ -1,6 +1,6 @@
-package com.yangjq.commons;
+package com.yangjq.commons.exception;
 
-import com.yangjq.commons.exception.BizException;
+import com.yangjq.commons.Result;
 import java.util.List;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
